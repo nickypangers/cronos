@@ -1,0 +1,6 @@
+#!/bin/sh
+make -C contracts
+cat contracts/out/dapp.sol.json | \
+    jq '.contracts."src/CronosERC20.sol".CronosERC20' | \
+    jq '{abi, bin: .evm.bytecode.object}' \
+    > x/cronos/types/contracts/CronosERC20.json

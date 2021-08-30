@@ -150,3 +150,15 @@ run-integration-tests:
 	@nix-shell ./integration_tests/shell.nix --run ./scripts/run-integration-tests
 
 .PHONY: run-integration-tests
+
+###############################################################################
+###                                Utility                                  ###
+###############################################################################
+
+test-cronos-contracts:
+	@nix-shell -I nixpkgs=./nix -p dapp jq --pure --run "make -C contracts test"
+
+gen-cronos-contracts:
+	@nix-shell -I nixpkgs=./nix -p dapp jq --pure --run ./scripts/gen-cronos-contracts
+
+.PHONY: gen-cronos-contracts test-cronos-contracts
