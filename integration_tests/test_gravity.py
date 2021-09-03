@@ -147,7 +147,7 @@ def test_gravity_transfer(gravity, suspend_capture):
     assert erc20.caller.balanceOf(geth.eth.coinbase) == balance - amount
 
     # TODO better way to wait?
-    time.sleep(20)
+    time.sleep(30)
 
     denom = "gravity" + erc20.address
     assert cli.balance(cosmos_recipient, denom) == amount
