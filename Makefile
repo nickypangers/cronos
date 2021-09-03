@@ -159,6 +159,7 @@ test-cronos-contracts:
 	@nix-shell -I nixpkgs=./nix -p dapp jq --pure --run "make -C contracts test"
 
 gen-cronos-contracts:
+	@git submodule update --init --recursive
 	@nix-shell -I nixpkgs=./nix -p dapp jq --pure --run ./scripts/gen-cronos-contracts
 
 .PHONY: gen-cronos-contracts test-cronos-contracts
