@@ -111,14 +111,22 @@ func (suite *KeeperTestSuite) TestDenomContractMap() {
 	keeper := suite.app.CronosKeeper
 
 	denom := "testdenom"
-	addr := common.BigToAddress(big.NewInt(1))
+	autoContract := common.BigToAddress(big.NewInt(1))
+	externalContract := common.BigToAddress(big.NewInt(2))
 
 	contract, found := keeper.GetContractByDenom(suite.ctx, denom)
 	suite.Require().False(found)
 
-	keeper.SetContractForDenom(suite.ctx, denom, addr)
+	keeper.SetAutoContractForDenom(suite.ctx, denom, autoContract)
 
 	contract, found = keeper.GetContractByDenom(suite.ctx, denom)
 	suite.Require().True(found)
-	suite.Require().Equal(addr, contract)
+	suite.Require().Equal(autoContract, contract)
+
+	keeper.SetExternalContractForDenom(suite.ctx, denom, externalContract)
+
+	contract, found = keeper.GetContractByDenom(suite.ctx, denom)
+	suite.Require().True(found)
+	suite.Require().Equal(externalContract, contract)
+
 }

@@ -34,7 +34,7 @@ func (suite *KeeperTestSuite) TestTokenConversion() {
 	suite.Require().NoError(err)
 
 	// send to erc20
-	err = keeper.SendCoinsFromNativeToERC20(suite.ctx, address, coins)
+	err = keeper.SendCoinsFromNativeToERC20(suite.ctx, address, coins, true)
 	suite.Require().NoError(err)
 
 	// check erc20 balance
