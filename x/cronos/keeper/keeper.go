@@ -212,9 +212,11 @@ func (k Keeper) IbcTransferCoins(ctx sdk.Context, from, destination string, coin
 	return nil
 }
 
-func (k Keeper) GetContractByDenom(ctx sdk.Context, denom string) (common.Address, bool) {
+// GetExternalContractByDenom find the corresponding contract for the denom,
+// external contract is taken in preference to auto-deployed one
+func (k Keeper) GetExternalContractByDenom(ctx sdk.Context, denom string) (common.Address, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.DenomToContractKey(denom))
+	bz := store.Get(types.DenomToExternalContractKey(denom))
 	if len(bz) == 0 {
 		return common.Address{}, false
 	}
@@ -222,7 +224,34 @@ func (k Keeper) GetContractByDenom(ctx sdk.Context, denom string) (common.Addres
 	return common.BytesToAddress(bz), true
 }
 
-func (k Keeper) SetContractForDenom(ctx sdk.Context, denom string, address common.Address) {
+// GetAutoContractByDenom find the corresponding contract for the denom,
+// external contract is taken in preference to auto-deployed one
+func (k Keeper) GetAutoContractByDenom(ctx sdk.Context, denom string) (common.Address, bool) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.DenomToContractKey(denom), address.Bytes())
+	bz := store.Get(types.DenomToAutoContractKey(denom))
+	if len(bz) == 0 {
+		return common.Address{}, false
+	}
+
+	return common.BytesToAddress(bz), true
+}
+
+// GetContractByDenom find the corresponding contract for the denom,
+// external contract is taken in preference to auto-deployed one
+func (k Keeper) GetContractByDenom(ctx sdk.Context, denom string) (contract common.Address, found bool) {
+	contract, found = k.GetExternalContractByDenom(ctx, denom)
+	if !found {
+		contract, found = k.GetAutoContractByDenom(ctx, denom)
+	}
+	return
+}
+
+func (k Keeper) SetExternalContractForDenom(ctx sdk.Context, denom string, address common.Address) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.DenomToExternalContractKey(denom), address.Bytes())
+}
+
+func (k Keeper) SetAutoContractForDenom(ctx sdk.Context, denom string, address common.Address) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.DenomToAutoContractKey(denom), address.Bytes())
 }
