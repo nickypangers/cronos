@@ -12,7 +12,7 @@ func (suite *KeeperTestSuite) TestDeployContract() {
 	suite.SetupTest()
 	keeper := suite.app.CronosKeeper
 
-	_, err := keeper.DeployCronosERC20(suite.ctx, "test")
+	_, err := keeper.DeployModuleERC20(suite.ctx, "test")
 	suite.Require().NoError(err)
 }
 
@@ -41,11 +41,11 @@ func (suite *KeeperTestSuite) TestTokenConversion() {
 	contract, found := keeper.GetContractByDenom(suite.ctx, denom)
 	suite.Require().True(found)
 
-	ret, err := keeper.CallCronosERC20(suite.ctx, contract, "balanceOf", address)
+	ret, err := keeper.CallModuleERC20(suite.ctx, contract, "balanceOf", address)
 	suite.Require().NoError(err)
 	suite.Require().Equal(amount, big.NewInt(0).SetBytes(ret))
 
-	ret, err = keeper.CallCronosERC20(suite.ctx, contract, "totalSupply")
+	ret, err = keeper.CallModuleERC20(suite.ctx, contract, "totalSupply")
 	suite.Require().NoError(err)
 	suite.Require().Equal(amount, big.NewInt(0).SetBytes(ret))
 }

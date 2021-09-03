@@ -54,9 +54,9 @@ func (k Keeper) CallEVM(ctx sdk.Context, to *common.Address, data []byte, value 
 	return &msg, ret, nil
 }
 
-// CallCronosERC20 call a method of CronosERC20 contract
-func (k Keeper) CallCronosERC20(ctx sdk.Context, contract common.Address, method string, args ...interface{}) ([]byte, error) {
-	data, err := types.CronosERC20Contract.ABI.Pack(method, args...)
+// CallModuleERC20 call a method of ModuleERC20 contract
+func (k Keeper) CallModuleERC20(ctx sdk.Context, contract common.Address, method string, args ...interface{}) ([]byte, error) {
+	data, err := types.ModuleERC20Contract.ABI.Pack(method, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -70,13 +70,13 @@ func (k Keeper) CallCronosERC20(ctx sdk.Context, contract common.Address, method
 	return res.Ret, nil
 }
 
-// DeployCronosERC20 deploy an embed erc20 contract
-func (k Keeper) DeployCronosERC20(ctx sdk.Context, denom string) (common.Address, error) {
-	ctor, err := types.CronosERC20Contract.ABI.Pack("", denom, uint8(0))
+// DeployModuleERC20 deploy an embed erc20 contract
+func (k Keeper) DeployModuleERC20(ctx sdk.Context, denom string) (common.Address, error) {
+	ctor, err := types.ModuleERC20Contract.ABI.Pack("", denom, uint8(0))
 	if err != nil {
 		return common.Address{}, err
 	}
-	data := append(types.CronosERC20Contract.Bin, ctor...)
+	data := append(types.ModuleERC20Contract.Bin, ctor...)
 
 	msg, res, err := k.CallEVM(ctx, nil, data, big.NewInt(0))
 	if err != nil {
@@ -98,7 +98,7 @@ func (k Keeper) SendCoinFromNativeToERC20(ctx sdk.Context, sender common.Address
 		if !autoDeploy {
 			return errors.New("no contract found for the denom")
 		}
-		contract, err = k.DeployCronosERC20(ctx, coin.Denom)
+		contract, err = k.DeployModuleERC20(ctx, coin.Denom)
 		if err != nil {
 			return err
 		}
@@ -108,7 +108,7 @@ func (k Keeper) SendCoinFromNativeToERC20(ctx sdk.Context, sender common.Address
 	if err != nil {
 		return err
 	}
-	_, err = k.CallCronosERC20(ctx, contract, "mint_by_native", sender, coin.Amount.BigInt())
+	_, err = k.CallModuleERC20(ctx, contract, "mint_by_native", sender, coin.Amount.BigInt())
 	if err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func (k Keeper) SendCoinFromERC20ToNative(ctx sdk.Context, sender common.Address
 		return err
 	}
 
-	_, err = k.CallCronosERC20(ctx, contract, "burn_by_native", sender, coin.Amount.BigInt())
+	_, err = k.CallModuleERC20(ctx, contract, "burn_by_native", sender, coin.Amount.BigInt())
 	if err != nil {
 		return err
 	}

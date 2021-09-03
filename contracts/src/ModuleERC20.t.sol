@@ -2,13 +2,13 @@ pragma solidity ^0.6.11;
 
 import "ds-test/test.sol";
 
-import "./CronosERC20.sol";
+import "./ModuleERC20.sol";
 
-contract CronosERC20Test is DSTest {
-    CronosERC20 token;
+contract ModuleERC20Test is DSTest {
+    ModuleERC20 token;
 
     function setUp() public {
-        token = new CronosERC20("gravity0x0", 0);
+        token = new ModuleERC20("gravity0x0", 0);
     }
 
     function test_basic_sanity() public {

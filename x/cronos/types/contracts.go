@@ -41,11 +41,11 @@ type CompiledContract struct {
 }
 
 var (
-	//go:embed contracts/CronosERC20.json
+	//go:embed contracts/ModuleERC20.json
 	cronosERC20JSON []byte
 
-	// CronosERC20Contract is the compiled cronos erc20 contract
-	CronosERC20Contract CompiledContract
+	// ModuleERC20Contract is the compiled cronos erc20 contract
+	ModuleERC20Contract CompiledContract
 
 	// EVMModuleAddress is the native module address for EVM
 	EVMModuleAddress common.Address
@@ -54,12 +54,12 @@ var (
 func init() {
 	EVMModuleAddress = common.BytesToAddress(authtypes.NewModuleAddress(ModuleName).Bytes())
 
-	err := json.Unmarshal(cronosERC20JSON, &CronosERC20Contract)
+	err := json.Unmarshal(cronosERC20JSON, &ModuleERC20Contract)
 	if err != nil {
 		panic(err)
 	}
 
-	if len(CronosERC20Contract.Bin) == 0 {
+	if len(ModuleERC20Contract.Bin) == 0 {
 		panic("load contract failed")
 	}
 }
